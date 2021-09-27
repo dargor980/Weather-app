@@ -12,7 +12,7 @@ public class Temperature {
     @SerializedName("temp_max")
     private float tempMax;
 
-    public Temperature(){
+    public Temperature() {
 
     }
 

@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int NETWORK_ACCESS_CODE = 200;
 
     private WeatherService service;
-    private  Call<City> cityCall;
+    private Call<City> cityCall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +49,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         service = API.getApi().create(WeatherService.class);
         setCurrentCity();
         btn.setOnClickListener(this);
+        startService(new Intent(this, ServiceWeather.class));
 
 
     }
 
-    private void setUI(){
+    private void setUI() {
         EditTextSearch = (EditText) findViewById(R.id.editTextSearch);
         textViewCity = (TextView) findViewById(R.id.textViewCity);
         textViewDescription = (TextView) findViewById(R.id.textViewDescription);
@@ -62,26 +64,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View view){
+    public void onClick(View view) {
         /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (CheckPermission(Manifest.permission.INTERNET) && CheckPermission(Manifest.permission.ACCESS_NETWORK_STATE)) {*/
-                String city = EditTextSearch.getText().toString();
-                if (city != "") {
-                    cityCall = service.getCity(city, API.APPKEY, "metric", "es");
-                    cityCall.enqueue(new Callback<City>() {
-                        @Override
-                        public void onResponse(Call<City> call, Response<City> response) {
-                            City city = response.body();
-                            setResult(city);
+        String city = EditTextSearch.getText().toString();
+        if (city != "") {
+            cityCall = service.getCity(city, API.APPKEY, "metric", "es");
+            cityCall.enqueue(new Callback<City>() {
+                @Override
+                public void onResponse(Call<City> call, Response<City> response) {
+                    City city = response.body();
+                    setResult(city);
 
-                        }
-
-                        @Override
-                        public void onFailure(Call<City> call, Throwable t) {
-                            Toast.makeText(MainActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
-                        }
-                    });
                 }
+
+                @Override
+                public void onFailure(Call<City> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "Error" + t, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
 
             /*} else {
@@ -104,13 +106,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //}
     }
 
-    private void setResult(City city){
+    private void setResult(City city) {
         textViewCity.setText(city.getName() + ", " + city.getCountry());
         textViewDescription.setText(city.getDescription());
         textViewTemp.setText((city.getTemperature() + "°C"));
         Picasso.with(this).load(API.BASE_ICONS + city.getIcon() + API.EXTENSION_ICONS).into(img);
     }
-    private void setCurrentCity(){
+
+    private void setCurrentCity() {
         String currentCity = "Santiago,CL";
         cityCall = service.getCity(currentCity, API.APPKEY, "metric", "es");
         cityCall.enqueue(new Callback<City>() {

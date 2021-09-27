@@ -17,8 +17,8 @@ public class API {
 
     public static final String APPKEY = "6a563288c35a76fde94e0a9eb5ff1076";
 
-    public static Retrofit getApi(){
-        if(retrofit == null){
+    public static Retrofit getApi() {
+        if (retrofit == null) {
 
             GsonBuilder builder = new GsonBuilder();
             builder.registerTypeAdapter(City.class, new MyDeserializer());
